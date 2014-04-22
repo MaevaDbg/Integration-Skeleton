@@ -1,11 +1,15 @@
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  //Compass : Minification/Concaténation CSS
   grunt.loadNpmTasks('grunt-contrib-compass');
+  //Concaténation des fichiers JS
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  //Minification JS
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  //Surveille les changements de fichiers
   grunt.loadNpmTasks('grunt-contrib-watch')
 
-  var jsSrc = ['_components/scripts/jquery-2.1.0.js', '_components/scripts/home.js']
+  var jsSrc = ['_components/scripts/jquery-2.1.0.js']
     , jsDist = 'js/app.js'
 
   // Configuration de Grunt
@@ -13,28 +17,27 @@ module.exports = function(grunt) {
 
     pkg: grunt.file.readJSON('package.json'),
 
-    // configuration des tâches grunt
+    compass: {
+      compile: {
+        options: {
+          config: 'config.rb'
+        }
+      }
+    },
     concat: {
       options: {
         separator: ';',
       },
-      dist: {
+      compile: {
         src: jsSrc,
         dest: jsDist
-      }
-    },
-    compass: {
-      dist: {
-        options: {
-          config: 'config.rb'
-        }
       }
     },
     uglify: {
       options: {
         separator: ';'
       },
-      dist: {
+      compile: {
         src: jsSrc,
         dest: jsDist
       }
@@ -45,11 +48,11 @@ module.exports = function(grunt) {
       },
       scripts: {
         files: '**/*.js', // tous les fichiers JavaScript de n'importe quel dossier
-        tasks: ['concat:dist']
+        tasks: ['concat:compile']
       },
       styles: {
         files: '**/*.scss', // tous les fichiers Sass de n'importe quel dossier
-        tasks: ['compass:dist']
+        tasks: ['compass:compile']
       }
     }
 
@@ -57,7 +60,7 @@ module.exports = function(grunt) {
 
   // Les tâches sont enregistrées ici
   grunt.registerTask('default', ['dev', 'watch'])
-  grunt.registerTask('dev', ['concat:dist','compass:dist']);
-  grunt.registerTask('prod', ['uglify:dist']);
+  grunt.registerTask('dev', ['concat:compile','compass:compile']);
+  grunt.registerTask('prod', ['uglify:compile']);
 
 };
